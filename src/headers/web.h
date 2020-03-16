@@ -1,5 +1,4 @@
 #ifndef WEB_H
-
 #define WEB_H
 #include "headers/settings.h"
 #ifdef TARGET_ESP8266

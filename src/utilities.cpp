@@ -1,5 +1,4 @@
 #include "headers/utilities.h"
-#include "headers/settings.h"
 #ifdef TARGET_ESP8266
   #include <ESP8266WiFi.h>
 #endif
@@ -180,26 +179,28 @@ char* getWakeupReason(){
   switch(wakeup_reason)
   {
     case ESP_SLEEP_WAKEUP_EXT0 : 
-      Serial.println("Wakeup caused by external signal using RTC_IO"); 
+      println("Wakeup caused by external signal using RTC_IO"); 
       strcpy_P(buff, PSTR("External System"));
       break;
     case ESP_SLEEP_WAKEUP_EXT1 : 
-      Serial.println("Wakeup caused by external signal using RTC_CNTL");
+      println("Wakeup caused by external signal using RTC_CNTL");
       strcpy_P(buff, PSTR("External System"));
       break;
     case ESP_SLEEP_WAKEUP_TIMER :
-      Serial.println("Wakeup caused by timer");
+      println("Wakeup caused by timer");
       strcpy_P(buff, PSTR("Deep-Sleep Wake"));
       break;
     case ESP_SLEEP_WAKEUP_TOUCHPAD : 
-      Serial.println("Wakeup caused by touchpad"); 
+      println("Wakeup caused by touchpad"); 
       strcpy_P(buff, PSTR("Sensor"));
       break;
     case ESP_SLEEP_WAKEUP_ULP :
-      Serial.println("Sensor");
+      println("Sensor");
       break;
     default : 
-      Serial.printf("Other: %d\n",wakeup_reason);
+      char buffer [30];
+      sprintf (buffer, "Other: %d\n", wakeup_reason);
+      println(String(buffer));
       break;
   }
   #endif
@@ -245,8 +246,10 @@ char* getWakeupReason(){
       strcpy_P(buff, PSTR("Other"));     
       break;
   }
-  Serial.printf("\n\nReason for reboot: %s\n", buff);
-  Serial.println("----------------------------------------------");
+  char buffer [30];
+  sprintf (buffer, "\n\nReason for reboot: %s\n", buff);
+  println(String(buffer));
+  println("----------------------------------------------");
   #endif
   return buff;
 }

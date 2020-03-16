@@ -5,7 +5,7 @@
 #include "headers/temp.h"
 #include <ver.h>
 #include "headers/utilities.h"
-#include "headers/message.h"
+#include "headers/mqttclient.h"
 #include "headers/blynk.h"
 
 void (*loopfcnPtr)();
@@ -42,18 +42,17 @@ void sleep(uint64 sleepSeconds = 0){
   //If we set the value too high use the max allowed value
   if(sleep > ESP.deepSleepMax() * .95)
     sleep = ESP.deepSleepMax() *.95;
-  Serial.print("Going to sleep for ");
-  Serial.print(uint64ToString(sleep));
-  Serial.println(" microseconds");
+  if(sleep > millis() * 1001){
+    sleep = sleep - millis() * 1000;
+  }
+  println("Going to sleep for " + uint64ToString(sleep) + " microseconds");
   ESP.deepSleep(sleep);
   #endif
   #ifdef TARGET_ESP32
   if(sleep == 0)
     sleep = (uint64_t)1440 * 60000000;
   esp_sleep_enable_timer_wakeup(sleep);
-    Serial.print("Going to sleep for ");
-    Serial.print(uint64ToString(sleep));
-    Serial.println(" seconds");
+  println("Going to sleep for " + uint64ToString(sleep) + " microseconds");
   esp_deep_sleep_start();
   #endif
 }
@@ -86,7 +85,6 @@ void loopRun(){
     wifiSetup();
     blynkSetup();
     mqttSetup();
-    Serial.println("setup complete");
     blynkLoop(temp);
     mqttLoop(temp);
     sleep();
@@ -101,7 +99,6 @@ void loopRun(){
 bool shouldSleep(){
   pinMode(DO_CONFIG, INPUT); 
   int doConf = digitalRead(DO_CONFIG);
-  Serial.println(doConf);
   return doConf == LOW && didWakeFromDeepSleep();
 }
 
@@ -111,7 +108,6 @@ bool shouldConfig(){
 
   pinMode(DO_CONFIG, INPUT); 
   int doConf = digitalRead(DO_CONFIG);
-  Serial.println(doConf);
   return doConf == LOW && !didWakeFromDeepSleep();
 }
 
@@ -123,15 +119,14 @@ void setup() {
   Serial.setDebugOutput(true);
   Serial.begin(115200);
   delay(2000);
-  
   if(shouldSleep()){
-    Serial.println("Going to Sleep Right away");
+    println("Going to Sleep Right away");
     sleep(1440);//8266 will end up sleeping max
     return;
   }
 
   if(shouldConfig()){
-    Serial.println("Starting Configuration");
+    println("Starting Configuration");
     setupConfig();
     loopfcnPtr = loopConfig;
     return;

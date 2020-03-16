@@ -37,11 +37,7 @@ float calculateTempF(float r){
   T = T - 273.15;
   T = (T * 9.0)/ 5 + 32.0; 
 
-  Serial.print("Resistance: ");
-  Serial.print(r);
-  Serial.print(" works out to "); 
-  Serial.print(T);
-  Serial.println(" F"); 
+  println("Resistance: " + String(r) + " works out to " + String(T) + "F");
   return T;
 }
 

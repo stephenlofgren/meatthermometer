@@ -6,6 +6,8 @@
 #ifdef TARGET_ESP32
     #include <WiFi.h>
 #endif
+#include "headers/blynk.h"
+#include "headers/settings.h"
 #include <Arduino.h>  // for type definitions
 
 char* decodeWiFiStatus(wl_status_t status);
